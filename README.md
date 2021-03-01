@@ -1,2 +1,2 @@
-# MapEditor
- Used to make tile maps for RPGs or platformers.
+# Map-Editor
+Makes tile maps for RPGs or platformers, specifically, for the use of bbGL.
