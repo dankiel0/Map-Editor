@@ -89,7 +89,7 @@ public class Map extends JPanel implements MouseListener, MouseMotionListener, M
 			g.drawImage(MapEditor.ui.individualTiles.get(tile.index), (int) (tile.tileMapX + tileMapX), (int) (tile.tileMapY + tileMapY), null);
 			if(tile.solid == 1 && solidMode) {
 				g.setColor(Color.RED);
-				g.fillOval(tile.tileMapX + tileMapX, tile.tileMapY + tileMapY, MapEditor.ui.tileSize / 2, MapEditor.ui.tileSize / 2);
+				g.fillRect(tile.tileMapX + tileMapX, tile.tileMapY + tileMapY, MapEditor.ui.tileSize / 2, MapEditor.ui.tileSize / 2);
 			}
 		}
 		
@@ -155,7 +155,12 @@ public class Map extends JPanel implements MouseListener, MouseMotionListener, M
 				// set tile position on map
 				MapEditor.ui.selectedTile.setTileMapPosition(Util.convertToTileSize(e.getX() - tileMapX), Util.convertToTileSize(e.getY() - tileMapY));
 				
-				removeHoveredOverTile(e);
+				for(int i = tiles.size() - 1; i >= 0; i--)
+					if(tiles.get(i).tileMapX == Util.convertToTileSize(e.getX() - tileMapX) && tiles.get(i).tileMapY == Util.convertToTileSize(e.getY() - tileMapY)) {
+						if(tiles.get(i).index == MapEditor.ui.selectedTile.index)
+							tiles.remove(i);
+						break;
+					}
 				
 				// add the selected tile to the tiles array
 				tiles.add((Tile) MapEditor.ui.selectedTile.clone());
@@ -166,18 +171,18 @@ public class Map extends JPanel implements MouseListener, MouseMotionListener, M
 				removeHoveredOverTile(e);
 		} else {
 			if(SwingUtilities.isLeftMouseButton(e)) {
-				for(Tile tile : tiles) {
-					if(tile.tileMapX == Util.convertToTileSize(e.getX() - tileMapX) && tile.tileMapY == Util.convertToTileSize(e.getY() - tileMapY)) {
-						tile.solid = 1;
+				for(int i = tiles.size() - 1; i >= 0; i--) {
+					if(tiles.get(i).tileMapX == Util.convertToTileSize(e.getX() - tileMapX) && tiles.get(i).tileMapY == Util.convertToTileSize(e.getY() - tileMapY)) {
+						tiles.get(i).solid = 1;
 						break;
 					}
 				}
 			}
 			
 			if(SwingUtilities.isRightMouseButton(e)) {
-				for(Tile tile : tiles) {
-					if(tile.tileMapX == Util.convertToTileSize(e.getX() - tileMapX) && tile.tileMapY == Util.convertToTileSize(e.getY() - tileMapY)) {
-						tile.solid = 0;
+				for(int i = tiles.size() - 1; i >= 0; i--) {
+					if(tiles.get(i).tileMapX == Util.convertToTileSize(e.getX() - tileMapX) && tiles.get(i).tileMapY == Util.convertToTileSize(e.getY() - tileMapY)) {
+						tiles.get(i).solid = 0;
 						break;
 					}
 				}
@@ -190,7 +195,7 @@ public class Map extends JPanel implements MouseListener, MouseMotionListener, M
 	// removes tile that is hovered over by mouse
 	private void removeHoveredOverTile(MouseEvent e) {
 		// loops through every tile on the map and compares coordinates to mouse coordinates
-		for(int i = 0; i < tiles.size(); i++)
+		for(int i = tiles.size() - 1; i >= 0; i--)
 			if(tiles.get(i).tileMapX == Util.convertToTileSize(e.getX() - tileMapX) && tiles.get(i).tileMapY == Util.convertToTileSize(e.getY() - tileMapY)) {
 				tiles.remove(i);
 				break;
